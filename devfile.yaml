@@ -1,0 +1,28 @@
+schemaVersion: 2.2.0
+metadata:
+  name: devspaces-roadshow-demo
+components:
+  - name: nodejs-runtime
+    container:
+      image: registry.access.redhat.com/ubi9/nodejs-20:latest
+      memoryLimit: 1024Mi
+      mountSources: true
+      endpoints:
+        - name: http-app
+          targetPort: 8080
+          exposure: public
+          protocol: http
+commands:
+  - id: install-dependencies
+    exec:
+      component: nodejs-runtime
+      commandLine: "npm install"
+      workingDir: ${PROJECT_SOURCE}
+  - id: run-dev
+    exec:
+      component: nodejs-runtime
+      commandLine: "npm run dev"
+      workingDir: ${PROJECT_SOURCE}
+events:
+  postStart:
+    - install-dependencies
